@@ -1,12 +1,12 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
-import { ref } from 'vue'
+import {onMounted, ref} from 'vue'
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import {
   Bars3Icon,
   CalendarIcon,
   ChartPieIcon,
-  DocumentDuplicateIcon,
+  ArrowLeftStartOnRectangleIcon,
   FolderIcon,
   HomeIcon,
   UsersIcon,
@@ -20,6 +20,11 @@ const navigation = [
 ]
 
 const sidebarOpen = ref(false)
+const logout = () => localStorage.removeItem("store_name");
+const store_name = ref('');
+onMounted(() => {
+  store_name.value = localStorage.getItem("store_name");
+});
 </script>
 
 <template>
@@ -105,11 +110,11 @@ const sidebarOpen = ref(false)
                 </ul>
               </li>
 
-              <li class="-mx-6 mt-auto">
-                <a href="#" class="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50">
-                  <img class="h-8 w-8 rounded-full bg-gray-50" src="./assets/main_background.png" alt="" />
-                  <span class="sr-only">Your profile</span>
-                  <span aria-hidden="true">Test</span>
+              <li v-if="store_name" @click="logout" class="-mx-6 mt-auto">
+                <a href="/" class="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50">
+                  <ArrowLeftStartOnRectangleIcon class="w-1/12"/>
+                  <span class="sr-only">로그아웃</span>
+                  <span aria-hidden="true">로그아웃</span>
                 </a>
               </li>
             </ul>

@@ -1,4 +1,10 @@
 <script setup>
+import {onMounted, ref} from "vue";
+
+const store_name = ref('');
+onMounted(() => {
+  store_name.value = localStorage.getItem("store_name");
+});
 </script>
 
 <template>
@@ -42,11 +48,21 @@
           </div>
         </div>
         <div class="text-center">
-          <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">Hisistant to enrich your online business</h1>
+          <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">Hisistant to enrich your Online business</h1>
           <p class="mt-6 text-lg leading-8 text-gray-600">하이시스턴트를 통해 더 편한 테이블 오더 서비스를 체험해보세요. 매출 시각화와 제공해드리는 인사이트를 통해 메뉴 선정, 매출 전략, 재고 관리를 도와드릴게요.</p>
-          <div class="mt-10 flex items-center justify-center gap-x-6">
-            <a href="/login" class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">로그인</a>
-            <a href="#" class="text-sm font-semibold leading-6 text-gray-900">회원가입 <span aria-hidden="true">→</span></a>
+
+          <div v-if="store_name" class="mt-10 flex flex-col items-center justify-center gap-y-4">
+            <a href="#" class="text-md font-semibold leading-6 text-gray-900 block">
+              {{ store_name }}<span aria-hidden="true">입니다.</span>
+            </a>
+            <RouterLink to="/order" class="rounded-md bg-black px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 block">
+              주문하러 가기<span aria-hidden="true">→</span>
+            </RouterLink>
+          </div>
+
+          <div v-else-if="!store_name" class="mt-10 flex items-center justify-center gap-x-6">
+            <RouterLink to="/login" class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">로그인</RouterLink>
+            <a href="#" class="text-sm font-semibold leading-6 text-gray-900">계정 신청하기 <span aria-hidden="true">→</span></a>
           </div>
         </div>
       </div>
