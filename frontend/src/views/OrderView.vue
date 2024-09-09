@@ -160,7 +160,7 @@
                     </div>
                   </PopoverGroup>
                 </div>
-
+                <OrderCart/>
                 <!-- Mobile menu and search (lg-) -->
                 <div class="flex flex-1 items-center lg:hidden">
                   <button type="button" class="-ml-2 rounded-md bg-white p-2 text-gray-400" @click="open = true">
@@ -188,7 +188,7 @@
                     <a href="#" class="hidden text-sm font-medium text-gray-700 hover:text-gray-800 lg:block">Help</a>
 
                     <!-- Cart -->
-                    <div class="ml-4 flow-root lg:ml-8">
+                    <div @click="toggleCart" class="ml-4 flow-root lg:ml-8">
                       <div class="group -m-2 flex items-center p-2">
                         <ShoppingBagIcon class="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500" aria-hidden="true" />
                         <span class="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">0</span>
@@ -231,8 +231,9 @@ import {
   XMarkIcon,
 } from '@heroicons/vue/24/outline'
 import { ChevronDownIcon } from '@heroicons/vue/20/solid'
+import {useCartStore} from "@/stores/cart.js";
+import OrderCart from "@/components/OrderCart.vue";
 
-const currencies = ['CAD', 'USD', 'AUD', 'EUR', 'GBP']
 const navigation = {
   categories: [
     {
@@ -304,6 +305,12 @@ const navigation = {
     },
   ],
 
+}
+
+const cartStore = useCartStore()
+
+const toggleCart = () => {
+  cartStore.toggleCart()
 }
 onMounted(() => {
   const storeName = localStorage.getItem('store_name');
