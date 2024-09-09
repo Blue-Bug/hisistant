@@ -16,9 +16,9 @@ import {
 const route = useRoute()
 
 const navigation = [
-  { name: 'Main', href: '/', icon: HomeIcon },
-  { name: 'Order', href: '/order', icon: UsersIcon },
-  { name: 'Sales', href: '/sales', icon: ChartPieIcon },
+  { name: '메인화면', href: '/', icon: HomeIcon },
+  { name: '주문하기', href: '/order', icon: UsersIcon },
+  { name: '통계확인', href: '/sales', icon: ChartPieIcon },
 ]
 
 const sidebarOpen = ref(false)
