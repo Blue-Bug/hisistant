@@ -1,53 +1,63 @@
 <template>
-  <Bar :data="this.$data" :options="this.$options" />
+  <div>
+    <apexchart type="bar" :options="chartOptions" :series="series"></apexchart>
+  </div>
 </template>
 
 <script>
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  BarElement,
-  CategoryScale,
-  LinearScale
-} from 'chart.js'
-import { Bar } from 'vue-chartjs'
+import { defineComponent, reactive } from 'vue';
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
-
-export default {
-  components: {
-    Bar
-  },
-  options:{
-    responsive: true,
-    maintainAspectRatio: false
-  },
-  data() {
-    return  {
-      labels: [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December'
-      ],
-      datasets: [
-        {
-          label: 'Data One',
-          backgroundColor: '#f87979',
-          data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11]
+export default defineComponent({
+  setup() {
+    const state = reactive({
+      series: [{
+        name: 'Sales',
+        data: [30, 40, 45, 50, 49, 60, 70, 91, 125]
+      }],
+      chartOptions: {
+        chart: {
+          type: 'bar',
+          height: 350
+        },
+        plotOptions: {
+          bar: {
+            horizontal: true,
+            columnWidth: '55%',
+            endingShape: 'rounded'
+          },
+        },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          show: true,
+          width: 2,
+          colors: ['transparent']
+        },
+        xaxis: {
+          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+        },
+        yaxis: {
+          title: {
+            text: '$ (thousands)'
+          }
+        },
+        fill: {
+          opacity: 1
+        },
+        tooltip: {
+          y: {
+            formatter: function (val) {
+              return "$ " + val + " thousands"
+            }
+          }
         }
-      ]
-    }
+      }
+    });
+
+    return {
+      ...state
+    };
   }
-}
+});
 </script>

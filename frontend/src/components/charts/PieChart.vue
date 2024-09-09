@@ -1,31 +1,55 @@
 <template>
-  <Pie :data="this.$data" :options="this.$options" />
+  <div>
+    <apexchart type="donut" :options="chartOptions" :series="series"></apexchart>
+  </div>
 </template>
 
 <script>
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
-import { Pie } from 'vue-chartjs'
+import { defineComponent, reactive } from 'vue';
 
-ChartJS.register(ArcElement, Tooltip, Legend)
+export default defineComponent({
+  setup() {
+    const state = reactive({
+      series: [44, 55, 41, 17, 15],
+      chartOptions: {
+        chart: {
+          type: 'donut',
+          height: 350
+        },
+        plotOptions: {
+          pie: {
+            startAngle: -90,
+            endAngle: 90,
+            offsetY: 10,
+          }
+        },
+        dataLabels: {
+          enabled: true
+        },
+        fill: {
+          type: 'gradient'
+        },
+        legend: {
+          position: 'bottom'
+        },
+        responsive: [{
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 200,
+              height: 350,
+            },
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }]
+      }
+    });
 
-export default {
-  components: {
-    Pie
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false
-  },
-  data() {
     return {
-      labels: ['VueJs', 'EmberJs', 'ReactJs', 'AngularJs'],
-      datasets: [
-        {
-          backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16'],
-          data: [40, 20, 80, 10]
-        }
-      ]
-    }
+      ...state
+    };
   }
-}
+});
 </script>

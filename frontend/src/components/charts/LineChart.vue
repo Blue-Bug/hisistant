@@ -1,49 +1,46 @@
 <template>
-  <Line :data="this.$data" :options="this.$options" />
+  <div>
+    <apexchart type="line" :options="chartOptions" :series="series"></apexchart>
+  </div>
 </template>
 
-<script lang="ts">
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-} from 'chart.js'
-import { Line } from 'vue-chartjs'
+<script>
+import { defineComponent, reactive } from 'vue';
 
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend
-)
-
-export default {
-  components: {
-    Line
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false
-  },
-  data() {
-    return {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-      datasets: [
-        {
-          label: 'Data One',
-          backgroundColor: '#f87979',
-          data: [40, 39, 10, 40, 39, 80, 40]
+export default defineComponent({
+  setup() {
+    const state = reactive({
+      series: [{
+        name: 'Sales',
+        data: [
+          { x: new Date('2023-01-01').getTime(), y: 30 },
+          { x: new Date('2023-01-02').getTime(), y: 40 },
+          { x: new Date('2023-01-03').getTime(), y: 35 },
+          // 더 많은 데이터 포인트 추가
+        ]
+      }],
+      chartOptions: {
+        chart: {
+          type: 'line',
+          height: 350,
+          zoom: {
+            enabled: true
+          }
+        },
+        xaxis: {
+          type: 'datetime'
+        },
+        tooltip: {
+          x: {
+            format: 'dd MMM yyyy'
+          }
         }
-      ]
-    }
+      }
+    });
+
+    return {
+      ...state
+    };
   }
-}
+});
 </script>
