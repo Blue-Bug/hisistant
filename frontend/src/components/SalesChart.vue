@@ -35,12 +35,15 @@ import {
   UsersIcon,
 } from '@heroicons/vue/24/outline'
 import PieChart from "@/components/charts/PieChart.vue";
+import BarChart from "@/components/charts/BarChart.vue";
+import LineChart from "@/components/charts/LineChart.vue";
 
 const actions = [
   {
-    title: 'Request time off',
+    title: '주차별 매출',
     href: '#',
     icon: ClockIcon,
+    chart: BarChart,
     iconForeground: 'text-teal-700',
     iconBackground: 'bg-teal-50',
   },
@@ -53,32 +56,21 @@ const actions = [
     iconBackground: 'bg-purple-50',
   },
   {
-    title: 'Schedule a one-on-one',
+    title: '시간별 매출',
     href: '#',
     icon: UsersIcon,
+    chart: LineChart,
     iconForeground: 'text-sky-700',
     iconBackground: 'bg-sky-50',
   },
   {
-    title: 'Payroll',
+    title: '월별 매출',
     href: '#',
     icon: BanknotesIcon,
+    chart: BarChart,
     iconForeground: 'text-yellow-700',
     iconBackground: 'bg-yellow-50',
   },
-  {
-    title: 'Submit an expense',
-    href: '#',
-    icon: ReceiptRefundIcon,
-    iconForeground: 'text-rose-700',
-    iconBackground: 'bg-rose-50',
-  },
-  {
-    title: 'Training',
-    href: '#',
-    icon: AcademicCapIcon,
-    iconForeground: 'text-indigo-700',
-    iconBackground: 'bg-indigo-50',
-  },
+
 ]
 </script>
