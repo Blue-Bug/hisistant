@@ -130,19 +130,18 @@
                             <div class="relative bg-white">
                               <div class="mx-auto max-w-7xl px-8">
                                 <div class="grid grid-cols-4 gap-x-8 gap-y-10 py-16">
-                                  <div v-for="item in category.featured" :key="item.name" class="group relative">
+                                  <div @click="addToCart(item)" v-for="item in category.featured" :key="item.name" class="group relative">
                                     <div class="aspect-h-1 aspect-w-1 overflow-hidden rounded-md bg-gray-100 group-hover:opacity-75">
                                       <img :src="item.imageSrc" :alt="item.imageAlt" class="object-cover object-center" />
                                     </div>
-                                    <a :href="item.href" class="mt-4 block font-medium text-gray-900">
+                                    <a class="mt-4 block font-medium text-gray-900">
                                       <span class="absolute inset-0 z-10" aria-hidden="true" />
                                       {{ item.name }}
                                     </a>
                                     <p aria-hidden="true" class="mt-1">\{{ item.price }}</p>
-                                    <div class="mt-6">
-                                      <a :href="item.href" class="relative flex items-center justify-center rounded-md border border-transparent bg-gray-100 px-8 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200"
-                                      >주문에 추가<span class="sr-only">, {{ item.name }}</span></a
-                                      >
+                                    <div  class="mt-6 z-10">
+                                      <div class="relative flex items-center justify-center rounded-md border border-transparent bg-gray-100 px-8 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200"
+                                      >주문에 추가<span class="sr-only">, {{ item.name }}</span></div>
                                     </div>
                                   </div>
                                 </div>
@@ -187,7 +186,7 @@
                     <div @click="toggleCart" class="ml-4 flow-root lg:ml-8">
                       <div class="group -m-2 flex items-center p-2">
                         <ShoppingBagIcon class="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500" aria-hidden="true" />
-                        <span class="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">0</span>
+                        <span class="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">{{cartStore.cartCount}}</span>
                         <span class="sr-only">items in cart, view bag</span>
                       </div>
                     </div>
@@ -236,6 +235,7 @@ const navigation = {
       name: '세트메뉴',
       featured: [
         {
+          id: 1,
           name: 'New Arrivals',
           href: '#',
           price: 11000,
@@ -243,6 +243,7 @@ const navigation = {
           imageAlt: 'Models sitting back to back, wearing Basic Tee in black and bone.',
         },
         {
+          id: 2,
           name: 'Basic Tees',
           href: '#',
           price: 110,
@@ -250,6 +251,7 @@ const navigation = {
           imageAlt: 'Close up of Basic Tee fall bundle with off-white, ochre, olive, and black tees.',
         },
         {
+          id: 3,
           name: 'Accessories',
           href: '#',
           price: 110,
@@ -257,6 +259,7 @@ const navigation = {
           imageAlt: 'Model wearing minimalist watch with black wristband and white watch face.',
         },
         {
+          id: 4,
           name: 'Carry',
           href: '#',
           price: 110,
@@ -269,6 +272,7 @@ const navigation = {
       name: '사이드',
       featured: [
         {
+          id: 5,
           name: 'New Arrivals',
           href: '#',
           price: 110,
@@ -276,6 +280,7 @@ const navigation = {
           imageAlt: 'Hats and sweaters on wood shelves next to various colors of t-shirts on hangers.',
         },
         {
+          id: 6,
           name: 'Basic Tees',
           href: '#',
           price: 110,
@@ -283,6 +288,7 @@ const navigation = {
           imageAlt: 'Model wearing light heather gray t-shirt.',
         },
         {
+          id: 7,
           name: 'Accessories',
           href: '#',
           price: 110,
@@ -291,6 +297,7 @@ const navigation = {
               'Grey 6-panel baseball hat with black brim, black mountain graphic on front, and light heather gray body.',
         },
         {
+          id: 8,
           name: 'Carry',
           href: '#',
           price: 110,
@@ -308,6 +315,10 @@ const cartStore = useCartStore()
 const toggleCart = () => {
   cartStore.toggleCart()
 }
+const addToCart = (item) => {
+  cartStore.addToCart(item);
+  console.log('123')
+};
 onMounted(() => {
   const storeName = localStorage.getItem('store_name');
   if (!storeName) {
