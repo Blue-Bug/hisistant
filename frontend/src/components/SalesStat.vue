@@ -36,8 +36,8 @@ import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/vue/20/solid'
 import { CursorArrowRaysIcon, EnvelopeOpenIcon, UsersIcon } from '@heroicons/vue/24/outline'
 
 const stats = [
-  { id: 1, name: 'Total Subscribers', stat: '71,897', icon: UsersIcon, change: '122', changeType: 'increase' },
-  { id: 2, name: 'Avg. Open Rate', stat: '58.16%', icon: EnvelopeOpenIcon, change: '5.4%', changeType: 'increase' },
-  { id: 3, name: 'Avg. Click Rate', stat: '24.57%', icon: CursorArrowRaysIcon, change: '3.2%', changeType: 'decrease' },
+  { id: 1, name: '매출 건수', stat: '718', icon: UsersIcon, change: '122', changeType: 'increase' },
+  { id: 2, name: '총 매출 금액', stat: '\\12,345,678', icon: EnvelopeOpenIcon, change: '5.4%', changeType: 'increase' },
+  { id: 3, name: '일 평균 매출', stat: '\\123,456', icon: CursorArrowRaysIcon, change: '3.2%', changeType: 'decrease' },
 ]
 </script>
