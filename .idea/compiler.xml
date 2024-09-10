@@ -11,5 +11,9 @@
         <module name="auth.main" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="order" target="17" />
+      <module name="sales" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>

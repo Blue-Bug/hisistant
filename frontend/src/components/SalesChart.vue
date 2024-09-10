@@ -76,6 +76,7 @@ onMounted(() => {
       .catch(error => {
         console.error('get category error: ', error);
       });
+
 });
 
 const timeSalesData = ref([]);

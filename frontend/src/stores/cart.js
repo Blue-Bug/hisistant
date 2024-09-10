@@ -14,6 +14,10 @@ export const useCartStore = defineStore('cart', {
         openCart() {
             this.open = true
         },
+        resetCart() {
+            this.cartItems = [];
+            this.cartCount = 0;
+        },
         closeCart() {
             this.open = false
         },

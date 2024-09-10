@@ -24,6 +24,7 @@
                     </div>
 
                     <div class="mt-8">
+                      <OrderModal :open="modalOpen" @close="modalOpen = false" />
                       <div class="flow-root">
                         <ul role="list" class="-my-6 divide-y divide-gray-200">
                           <li v-for="product in products" :key="product.id" class="flex py-6">
@@ -65,7 +66,7 @@
                     </div>
                     <p class="mt-0.5 text-sm text-gray-500">다시 한 번 주문하신 메뉴를 확인해주세요.</p>
                     <div class="mt-6">
-                      <a href="#" class="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700">이대로 주문할게요</a>
+                      <a @click="confirm" class="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700">이대로 주문할게요</a>
                     </div>
                     <div class="mt-6 flex justify-center text-center text-sm text-gray-500">
                       <p>
@@ -85,6 +86,7 @@
       </div>
     </Dialog>
   </TransitionRoot>
+
 </template>
 
 <script setup>
@@ -92,7 +94,11 @@ import {computed, ref} from 'vue'
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline'
 import { useCartStore } from '../stores/cart.js'
+import axios from "axios";
+import OrderModal from "@/components/OrderModal.vue";
 
+const modalOpen = ref(false)
+const HOST = "http://localhost:8080"
 const cartStore = useCartStore();
 const products = computed(() => cartStore.cartItems);
 const removeProduct = (product) => {
@@ -105,29 +111,33 @@ const subtotal = computed(() => {
     return total + (product.price * product.qty);
   }, 0);
 });
-// [
-//   {
-//     id: 1,
-//     name: 'Throwback Hip Bag',
-//     href: '#',
-//     color: 'Salmon',
-//     price: '$90.00',
-//     quantity: 1,
-//     imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-01.jpg',
-//     imageAlt: 'Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt.',
-//   },
-//   {
-//     id: 2,
-//     name: 'Medium Stuff Satchel',
-//     href: '#',
-//     color: 'Blue',
-//     price: '$32.00',
-//     quantity: 1,
-//     imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-02.jpg',
-//     imageAlt:
-//         'Front of satchel with blue canvas body, black straps and handle, drawstring top, and front zipper pouch.',
-//   },
-//   // More products...
-// ]
+
+
+const confirm = () => {
+  const orderDetails = products.value.map(product => ({
+    id: product.id,
+    qty: product.qty
+  }));
+
+  const payload = {
+    order_items: orderDetails,
+    payment_amount: subtotal.value
+  };
+
+  axios.post(`${HOST}/api/order/confirm`, payload)
+      .then(response => {
+        if (response.status === 201) {
+          console.log('Order confirmed:', response.data);
+          // 주문이 성공적으로 완료된 후 장바구니를 비우거나 사용자가 알림을 받도록 추가 작업을 수행할 수 있습니다.
+          cartStore.resetCart();
+          modalOpen.value = true;
+        }
+      })
+      .catch(error => {
+        console.error('Order confirmation error:', error);
+        // 오류 처리 로직을 추가할 수 있습니다. 예를 들어, 사용자에게 오류 메시지를 표시하는 것 등.
+      });
+};
+
 
 </script>

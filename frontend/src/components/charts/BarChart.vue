@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { defineComponent, watch, reactive } from 'vue';
+import {defineComponent, watchEffect, reactive, watchSyncEffect} from 'vue';
 export default defineComponent({
   props: {
     salesData: {
@@ -21,7 +21,7 @@ export default defineComponent({
     const state = reactive({
       series: [{
         name: 'Sales',
-        data: []
+        data: [{x:'test',y:100}]
       }],
       chartOptions: {
         chart: {
@@ -44,6 +44,7 @@ export default defineComponent({
           colors: ['transparent']
         },
         xaxis: {
+          type: 'category',
           categories: [],
           labels: {
             style: {
@@ -58,9 +59,7 @@ export default defineComponent({
           }
         },
         yaxis: {
-          title: {
-            text: '주차'
-          }
+          title: {}
         },
         fill: {
           opacity: 1
@@ -74,22 +73,19 @@ export default defineComponent({
         }
       }
     });
+
     const formatStat = (value) => {
       return Number(value).toLocaleString();
     };
-    const processSalesData = (salesData, salesLabel) => {
-      state.series[0].data = salesData;
-      state.chartOptions.xaxis.categories = salesLabel;
-    };
 
-    watch(
-        () => ({salesData: props.salesData, salesLabel: props.salesLabel}),
-        (newVal) => {
-          processSalesData(newVal.salesData, newVal.salesLabel);
-        },
-        {immediate: true, deep: true}
-    );
+    watchSyncEffect(() => {
+      const formattedData = props.salesData.value.map((value, index) => ({
+        x: props.salesLabel.value[index],
+        y: value
+      }));
 
+      state.series[0].data = formattedData;
+    });
     return {
       ...state
     };

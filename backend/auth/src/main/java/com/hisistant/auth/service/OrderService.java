@@ -1,18 +1,17 @@
 package com.hisistant.auth.service;
 
-import com.hisistant.auth.domain.Menu;
-import com.hisistant.auth.domain.MenuCategory;
-import com.hisistant.auth.domain.User;
+import com.hisistant.auth.domain.*;
 import com.hisistant.auth.dto.CategoryDTO;
 import com.hisistant.auth.dto.MenuDTO;
-import com.hisistant.auth.repository.MenuCategoryRepository;
-import com.hisistant.auth.repository.MenuRepository;
-import com.hisistant.auth.repository.UserRepository;
+import com.hisistant.auth.dto.OrderDTO;
+import com.hisistant.auth.dto.OrderItemDTO;
+import com.hisistant.auth.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +22,8 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final MenuCategoryRepository menuCategoryRepository;
     private final MenuRepository menuRepository;
+    private final OrderRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
     private final ModelMapper modelMapper;
 
     public List<CategoryDTO> getCategories(Long user_id){
@@ -44,5 +45,27 @@ public class OrderService {
             menuDTOList.add(modelMapper.map(menu, MenuDTO.class));
         }
         return menuDTOList;
+    }
+
+    public Order confirmOrder(Long user_id, OrderDTO orderDTO) {
+        Order order = Order.builder()
+                .user_id(user_id)
+                .order_date(LocalDateTime.now())
+                .payment_amount(orderDTO.getPayment_amount())
+                .build();
+
+        order = orderRepository.save(order);
+
+        List<OrderItemDTO> orderItems = orderDTO.getOrder_items();
+        for(OrderItemDTO orderItem : orderItems){
+            OrderItem item = OrderItem.builder()
+                    .menuId(orderItem.getId())
+                    .qty(orderItem.getQty())
+                    .orderId(order.getId())
+                    .build();
+            orderItemRepository.save(item);
+        }
+
+        return order;
     }
 }
