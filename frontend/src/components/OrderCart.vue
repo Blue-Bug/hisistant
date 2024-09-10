@@ -35,7 +35,7 @@
                               <div>
                                 <div class="flex justify-between text-base font-medium text-gray-900">
                                   <h3>
-                                    <a :href="product.href">{{ product.name }}</a>
+                                    <a :href="product.href">{{ product.menu_name }}</a>
                                   </h3>
                                   <p class="ml-4">{{ product.price }}원</p>
                                 </div>

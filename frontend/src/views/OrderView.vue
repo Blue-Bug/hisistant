@@ -44,13 +44,13 @@
                 <TabPanels as="template">
                   <TabPanel v-for="category in navigation.categories" :key="category.name" class="space-y-12 px-4 py-6">
                     <div class="grid grid-cols-2 gap-x-4 gap-y-10">
-                      <div v-for="item in category.featured" :key="item.name" class="group relative">
+                      <div v-for="item in category.featured" :key="item.menu_name" class="group relative">
                         <div class="aspect-h-1 aspect-w-1 overflow-hidden rounded-md bg-gray-100 group-hover:opacity-75">
                           <img :src="item.imageSrc" :alt="item.imageAlt" class="object-cover object-center" />
                         </div>
                         <a :href="item.href" class="mt-6 block text-sm font-medium text-gray-900">
                           <span class="absolute inset-0 z-10" aria-hidden="true" />
-                          {{ item.name }}
+                          {{ item.menu_name }}
                         </a>
                         <p aria-hidden="true" class="mt-1 text-sm text-gray-500">Shop now</p>
                       </div>
@@ -119,7 +119,7 @@
                     <div class="flex h-full justify-center space-x-8">
                       <Popover v-for="category in navigation.categories" :key="category.name" class="flex" v-slot="{ open }">
                         <div class="relative flex">
-                          <PopoverButton :class="[open ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-700 hover:text-gray-800', 'relative z-10 -mb-px flex items-center border-b-2 pt-px text-sm font-medium transition-colors duration-200 ease-out']">{{ category.name }}</PopoverButton>
+                          <PopoverButton @click="getMenu(category.id)" :class="[open ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-700 hover:text-gray-800', 'relative z-10 -mb-px flex items-center border-b-2 pt-px text-sm font-medium transition-colors duration-200 ease-out']">{{ category.name }}</PopoverButton>
                         </div>
 
                         <transition enter-active-class="transition ease-out duration-200" enter-from-class="opacity-0" enter-to-class="opacity-100" leave-active-class="transition ease-in duration-150" leave-from-class="opacity-100" leave-to-class="opacity-0">
@@ -130,18 +130,18 @@
                             <div class="relative bg-white">
                               <div class="mx-auto max-w-7xl px-8">
                                 <div class="grid grid-cols-4 gap-x-8 gap-y-10 py-16">
-                                  <div @click="addToCart(item)" v-for="item in category.featured" :key="item.name" class="group relative">
+                                  <div @click="addToCart(item)" v-for="item in category.featured" :key="item.menu_name" class="group relative">
                                     <div class="aspect-h-1 aspect-w-1 overflow-hidden rounded-md bg-gray-100 group-hover:opacity-75">
                                       <img :src="item.imageSrc" :alt="item.imageAlt" class="object-cover object-center" />
                                     </div>
                                     <a class="mt-4 block font-medium text-gray-900">
                                       <span class="absolute inset-0 z-10" aria-hidden="true" />
-                                      {{ item.name }}
+                                      {{ item.menu_name }}
                                     </a>
                                     <p aria-hidden="true" class="mt-1">\{{ item.price }}</p>
                                     <div  class="mt-6 z-10">
                                       <div class="relative flex items-center justify-center rounded-md border border-transparent bg-gray-100 px-8 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200"
-                                      >주문에 추가<span class="sr-only">, {{ item.name }}</span></div>
+                                      >주문에 추가<span class="sr-only">, {{ item.menu_name }}</span></div>
                                     </div>
                                   </div>
                                 </div>
@@ -202,7 +202,7 @@
 </template>
 
 <script setup>
-import {onMounted, ref} from 'vue'
+import {computed, onMounted, ref} from 'vue'
 import {
   Dialog,
   DialogPanel,
@@ -228,10 +228,12 @@ import {
 import { ChevronDownIcon } from '@heroicons/vue/20/solid'
 import {useCartStore} from "@/stores/cart.js";
 import OrderCart from "@/components/OrderCart.vue";
+import axios from "axios";
 
-const navigation = {
+const navigation = ref({
   categories: [
     {
+      id:1,
       name: '세트메뉴',
       featured: [
         {
@@ -269,6 +271,7 @@ const navigation = {
       ],
     },
     {
+      id:2,
       name: '사이드',
       featured: [
         {
@@ -306,10 +309,10 @@ const navigation = {
         },
       ],
     },
-  ],
+  ]
+});
 
-}
-
+const HOST = "http://localhost:8080";
 const cartStore = useCartStore()
 
 const toggleCart = () => {
@@ -317,9 +320,33 @@ const toggleCart = () => {
 }
 const addToCart = (item) => {
   cartStore.addToCart(item);
-  console.log('123')
+};
+
+const getMenu = async (category_id) => {
+  try {
+    const response = await axios.get(`${HOST}/api/order/menu/`+category_id);
+
+    if (response.status === 200) {
+      const category = navigation.value.categories.find(category => category.id === category_id);
+      category.featured = response.data;
+    }
+  } catch (error) {
+    console.error('Login error:', error);
+  } finally {
+    console.log('항상 마지막에 실행');
+  }
 };
 onMounted(() => {
+  axios.get(`${HOST}/api/order/category`)
+        .then(response =>{
+          if (response.status === 200) {
+            console.log(response.data);
+            navigation.value.categories = response.data;
+          }
+        })
+        .catch(error => {
+          console.error('get category error: ', error);
+        });
   const storeName = localStorage.getItem('store_name');
   if (!storeName) {
     alert("메뉴를 불러오지 못했습니다. 로그인해서 가게를 알려주세요.")

@@ -10,6 +10,7 @@ import VueApexCharts from 'vue3-apexcharts';
 
 const app = createApp(App)
 
+axios.defaults.withCredentials = true;
 app.use(createPinia());
 app.use(router);
 app.config.globalProperties.axios=axios;
