@@ -1,7 +1,5 @@
 package com.hisistant.auth.controller;
 
-import com.hisistant.auth.domain.DailySales;
-import com.hisistant.auth.domain.User;
 import com.hisistant.auth.dto.DailySalesDTO;
 import com.hisistant.auth.dto.MonthlySalesDTO;
 import com.hisistant.auth.dto.TimeSalesDTO;
@@ -44,12 +42,23 @@ public class SalesController {
         return ResponseEntity.ok(timeSales);
     }
     @GetMapping("/monthly")
-    public ResponseEntity<MonthlySalesDTO> getMontlySales(HttpServletRequest request) {
+    public ResponseEntity<MonthlySalesDTO> getMonthlySales(HttpServletRequest request) {
         HttpSession session = request.getSession();
         UserDTO user = (UserDTO)session.getAttribute("user");
         Long user_id = user.getId();
         System.out.println(user_id);
-        MonthlySalesDTO monthlySales = salesService.getMontlySales(user_id);
+        MonthlySalesDTO monthlySales = salesService.getMonthlySales(user_id);
+
+        return ResponseEntity.ok(monthlySales);
+    }
+    @GetMapping("/monthly/all")
+    public ResponseEntity<List<MonthlySalesDTO>> getAllMonthlySales(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        UserDTO user = (UserDTO)session.getAttribute("user");
+        Long user_id = user.getId();
+
+        System.out.println(user_id);
+        List<MonthlySalesDTO> monthlySales = salesService.getAllMonthlySales(user_id);
 
         return ResponseEntity.ok(monthlySales);
     }

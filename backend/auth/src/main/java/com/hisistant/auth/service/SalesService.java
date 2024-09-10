@@ -39,9 +39,19 @@ public class SalesService {
         return timeSalesDTO;
     }
 
-    public MonthlySalesDTO getMontlySales(Long user_id) {
+    public MonthlySalesDTO getMonthlySales(Long user_id) {
         MonthlySales monthlySales = monthlySalesRepository.findFirstByUserIdOrderByMonthDesc(user_id);
         MonthlySalesDTO monthlySalesDTO = modelMapper.map(monthlySales, MonthlySalesDTO.class);
         return monthlySalesDTO;
+    }
+
+    public List<MonthlySalesDTO> getAllMonthlySales(Long user_id) {
+        List<MonthlySales> monthlySales = monthlySalesRepository.findByUserId(user_id);
+        List<MonthlySalesDTO> monthlySalesDTOList = new ArrayList<>();
+        for (MonthlySales monthlySale : monthlySales) {
+
+            monthlySalesDTOList.add(modelMapper.map(monthlySale, MonthlySalesDTO.class));
+        }
+        return monthlySalesDTOList;
     }
 }

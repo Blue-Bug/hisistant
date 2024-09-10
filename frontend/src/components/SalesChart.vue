@@ -107,6 +107,28 @@ onMounted(() => {
         console.error('get category error: ', error);
       });
 });
+
+const monthlySalesData = ref([]);
+const monthlySalesLabel = ref([]);
+onMounted(() => {
+  axios.get(`${HOST}/api/sales/monthly/all`)
+      .then(response => {
+        if (response.status === 200) {
+          console.log(response.data);
+          const data = [];
+          const label = [];
+          response.data.forEach(e => {
+            data.push(e.sales_amount);
+            label.push(`${e.month}월`);
+          });
+          monthlySalesData.value = data;
+          monthlySalesLabel.value = label;
+        }
+      })
+      .catch(error => {
+        console.error('get category error: ', error);
+      });
+});
 const actions = [
   {
     title: '주차별 매출',
@@ -143,6 +165,8 @@ const actions = [
     chart: BarChart,
     iconForeground: 'text-yellow-700',
     iconBackground: 'bg-yellow-50',
+    salesData: monthlySalesData,
+    salesLabel: monthlySalesLabel
   }
 ];
 </script>
