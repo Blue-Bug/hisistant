@@ -32,12 +32,33 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue';
 import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/vue/20/solid'
 import { CursorArrowRaysIcon, EnvelopeOpenIcon, UsersIcon } from '@heroicons/vue/24/outline'
+import axios from 'axios';
 
-const stats = [
+const HOST = "http://localhost:8080";
+
+const stats = ref([
   { id: 1, name: '매출 건수', stat: '718', icon: UsersIcon, change: '122', changeType: 'increase' },
-  { id: 2, name: '총 매출 금액', stat: '\\12,345,678', icon: EnvelopeOpenIcon, change: '5.4%', changeType: 'increase' },
-  { id: 3, name: '일 평균 매출', stat: '\\123,456', icon: CursorArrowRaysIcon, change: '3.2%', changeType: 'decrease' },
-]
+  { id: 2, name: '총 매출 금액(원)', stat: '\\12,345,678', icon: EnvelopeOpenIcon, change: '5.4%', changeType: 'increase' },
+  { id: 3, name: '일 평균 매출(원)', stat: '\\123,456', icon: CursorArrowRaysIcon, change: '3.2%', changeType: 'decrease' },
+]);
+const formatStat = (value) => {
+  return Number(value).toLocaleString();
+};
+
+onMounted(() => {
+  axios.get(`${HOST}/api/sales/monthly`)
+      .then(response => {
+        if (response.status === 200) {
+          stats.value[0].stat = formatStat(response.data.sales_count);
+          stats.value[1].stat = formatStat(response.data.sales_amount);
+          stats.value[2].stat = formatStat(parseInt(response.data.sales_amount / 30));
+        }
+      })
+      .catch(error => {
+        console.error('get category error: ', error);
+      });
+});
 </script>

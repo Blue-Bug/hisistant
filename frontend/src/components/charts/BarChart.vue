@@ -68,13 +68,15 @@ export default defineComponent({
         tooltip: {
           y: {
             formatter: function (val) {
-              return val + "원";
+              return formatStat(val) + "원";
             }
           }
         }
       }
     });
-
+    const formatStat = (value) => {
+      return Number(value).toLocaleString();
+    };
     const processSalesData = (salesData, salesLabel) => {
       state.series[0].data = salesData;
       state.chartOptions.xaxis.categories = salesLabel;

@@ -1,10 +1,13 @@
 package com.hisistant.auth.service;
 
 import com.hisistant.auth.domain.DailySales;
+import com.hisistant.auth.domain.MonthlySales;
 import com.hisistant.auth.domain.TimeSales;
 import com.hisistant.auth.dto.DailySalesDTO;
+import com.hisistant.auth.dto.MonthlySalesDTO;
 import com.hisistant.auth.dto.TimeSalesDTO;
 import com.hisistant.auth.repository.DailySalesRepository;
+import com.hisistant.auth.repository.MonthlySalesRepository;
 import com.hisistant.auth.repository.TimeSalesRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -18,6 +21,7 @@ import java.util.List;
 public class SalesService {
     private final DailySalesRepository dailySalesRepository;
     private final TimeSalesRepository timeSalesRepository;
+    private final MonthlySalesRepository monthlySalesRepository;
     private final ModelMapper modelMapper;
 
     public List<DailySalesDTO> getDailySales(Long user_id) {
@@ -33,5 +37,11 @@ public class SalesService {
         TimeSales timeSales = timeSalesRepository.findFirstByUserIdOrderByDateDesc(user_id);
         TimeSalesDTO timeSalesDTO = modelMapper.map(timeSales, TimeSalesDTO.class);
         return timeSalesDTO;
+    }
+
+    public MonthlySalesDTO getMontlySales(Long user_id) {
+        MonthlySales monthlySales = monthlySalesRepository.findFirstByUserIdOrderByMonthDesc(user_id);
+        MonthlySalesDTO monthlySalesDTO = modelMapper.map(monthlySales, MonthlySalesDTO.class);
+        return monthlySalesDTO;
     }
 }
