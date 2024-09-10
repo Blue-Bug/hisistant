@@ -5,10 +5,21 @@
 </template>
 
 <script>
-import { defineComponent, reactive } from 'vue';
+import {defineComponent, reactive, watch} from 'vue';
 
 export default defineComponent({
-  setup() {
+
+  props: {
+    salesData: {
+      type: Array,
+      required: true
+    },
+    salesLabel: {
+      type: Array,
+      required: true
+    }
+  },
+  setup(props) {
     const state = reactive({
       series: [{
         name: 'Sales',
@@ -28,15 +39,33 @@ export default defineComponent({
           }
         },
         xaxis: {
-          type: 'datetime'
+          type: 'category',
+          categories: []
         },
         tooltip: {
           x: {
-            format: 'dd MMM yyyy'
+            format: 'HH시'
           }
         }
       }
     });
+    const processSalesData = (salesData, salesLabel) => {
+
+      state.chartOptions.xaxis.categories = salesLabel;
+      const formattedData = salesData.value.map((amount, index) => ({
+        x: `${index}시`, // 시간 레이블
+        y: amount
+      }));
+      state.series[0].data = formattedData;
+    };
+
+    watch(
+        () => ({salesData: props.salesData, salesLabel: props.salesLabel}),
+        (newVal) => {
+          processSalesData(newVal.salesData, newVal.salesLabel);
+        },
+        {immediate: true, deep: true}
+    );
 
     return {
       ...state

@@ -3,6 +3,7 @@ package com.hisistant.auth.controller;
 import com.hisistant.auth.domain.DailySales;
 import com.hisistant.auth.domain.User;
 import com.hisistant.auth.dto.DailySalesDTO;
+import com.hisistant.auth.dto.TimeSalesDTO;
 import com.hisistant.auth.dto.UserDTO;
 import com.hisistant.auth.service.SalesService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,5 +31,15 @@ public class SalesController {
         List<DailySalesDTO> dailySales = salesService.getDailySales(user_id);
 
         return ResponseEntity.ok(dailySales);
+    }
+    @GetMapping("/time")
+    public ResponseEntity<TimeSalesDTO> getTimeSales(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        UserDTO user = (UserDTO)session.getAttribute("user");
+        Long user_id = user.getId();
+        System.out.println(user_id);
+        TimeSalesDTO timeSales = salesService.getTimeSales(user_id);
+
+        return ResponseEntity.ok(timeSales);
     }
 }

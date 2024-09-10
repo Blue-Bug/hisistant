@@ -78,6 +78,35 @@ onMounted(() => {
       });
 });
 
+const timeSalesData = ref([]);
+const timeSalesLabel = ref([]);
+onMounted(() => {
+  axios.get(`${HOST}/api/sales/time`)
+      .then(response => {
+        if (response.status === 200) {
+          // Create arrays for data and labels
+          const data = [];
+          const labels = [];
+          for (let hour = 0; hour <= 23; hour++) {
+            const hourStr = hour.toString().padStart(2, '0'); // Format hour with leading zero
+            const amountKey = `hour_${hourStr}_amount`;
+            if(response.data[amountKey] === undefined){
+              data.push(0)
+            }else{
+              data.push(response.data[amountKey]);
+            }
+
+            labels.push(`${hourStr}시`);
+          }
+          console.log(data)
+          timeSalesData.value = data;
+          timeSalesLabel.value = labels;
+        }
+      })
+      .catch(error => {
+        console.error('get category error: ', error);
+      });
+});
 const actions = [
   {
     title: '주차별 매출',
@@ -104,6 +133,8 @@ const actions = [
     chart: LineChart,
     iconForeground: 'text-sky-700',
     iconBackground: 'bg-sky-50',
+    salesData: timeSalesData,
+    salesLabel: timeSalesLabel
   },
   {
     title: '월별 매출',

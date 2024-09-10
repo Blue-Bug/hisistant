@@ -1,8 +1,11 @@
 package com.hisistant.auth.service;
 
 import com.hisistant.auth.domain.DailySales;
+import com.hisistant.auth.domain.TimeSales;
 import com.hisistant.auth.dto.DailySalesDTO;
+import com.hisistant.auth.dto.TimeSalesDTO;
 import com.hisistant.auth.repository.DailySalesRepository;
+import com.hisistant.auth.repository.TimeSalesRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -14,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SalesService {
     private final DailySalesRepository dailySalesRepository;
+    private final TimeSalesRepository timeSalesRepository;
     private final ModelMapper modelMapper;
 
     public List<DailySalesDTO> getDailySales(Long user_id) {
@@ -23,5 +27,11 @@ public class SalesService {
             dailySalesDTOList.add(modelMapper.map(dailySale, DailySalesDTO.class));
         }
         return dailySalesDTOList;
+    }
+
+    public TimeSalesDTO getTimeSales(Long user_id) {
+        TimeSales timeSales = timeSalesRepository.findFirstByUserIdOrderByDateDesc(user_id);
+        TimeSalesDTO timeSalesDTO = modelMapper.map(timeSales, TimeSalesDTO.class);
+        return timeSalesDTO;
     }
 }
