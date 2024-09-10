@@ -5,14 +5,23 @@
 </template>
 
 <script>
-import { defineComponent, reactive } from 'vue';
-
+import { defineComponent, watch, reactive } from 'vue';
 export default defineComponent({
-  setup() {
+  props: {
+    salesData: {
+      type: Array,
+      required: true
+    },
+    salesLabel: {
+      type: Array,
+      required: true
+    }
+  },
+  setup(props) {
     const state = reactive({
       series: [{
         name: 'Sales',
-        data: [30, 40, 45, 50, 49, 60, 70, 91, 125]
+        data: []
       }],
       chartOptions: {
         chart: {
@@ -35,11 +44,22 @@ export default defineComponent({
           colors: ['transparent']
         },
         xaxis: {
-          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+          categories: [],
+          labels: {
+            style: {
+              fontSize: '12px',
+              colors: ['#000']
+            },
+            formatter: function (val) {
+              return val;
+            },
+            rotate: -45,
+            maxHeight: 60
+          }
         },
         yaxis: {
           title: {
-            text: '$ (thousands)'
+            text: '주차'
           }
         },
         fill: {
@@ -48,12 +68,25 @@ export default defineComponent({
         tooltip: {
           y: {
             formatter: function (val) {
-              return "$ " + val + " thousands"
+              return val + "원";
             }
           }
         }
       }
     });
+
+    const processSalesData = (salesData, salesLabel) => {
+      state.series[0].data = salesData;
+      state.chartOptions.xaxis.categories = salesLabel;
+    };
+
+    watch(
+        () => ({salesData: props.salesData, salesLabel: props.salesLabel}),
+        (newVal) => {
+          processSalesData(newVal.salesData, newVal.salesLabel);
+        },
+        {immediate: true, deep: true}
+    );
 
     return {
       ...state

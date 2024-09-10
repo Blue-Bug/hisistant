@@ -9,12 +9,11 @@
       <div class="mt-8">
         <h3 class="text-base font-semibold leading-6 text-gray-900">
           <a :href="action.href" class="focus:outline-none">
-            <!-- Extend touch target to entire panel -->
             <span class="absolute inset-0" aria-hidden="true" />
             {{ action.title }}
           </a>
         </h3>
-        <component :is="action.chart" />
+        <component :is="action.chart" :salesData="action.salesData" :salesLabel="action.salesLabel"/>
       </div>
       <span class="pointer-events-none absolute right-6 top-6 text-gray-300 group-hover:text-gray-400" aria-hidden="true">
         <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
@@ -33,10 +32,51 @@ import {
   ClockIcon,
   ReceiptRefundIcon,
   UsersIcon,
-} from '@heroicons/vue/24/outline'
+} from '@heroicons/vue/24/outline';
 import PieChart from "@/components/charts/PieChart.vue";
 import BarChart from "@/components/charts/BarChart.vue";
 import LineChart from "@/components/charts/LineChart.vue";
+import { onMounted, ref } from "vue";
+import axios from "axios";
+
+const HOST = "http://localhost:8080";
+const dailySalesData = ref([]);
+const dailySalesLabel = ref([]);
+onMounted(() => {
+  axios.get(`${HOST}/api/sales/daily`)
+      .then(response => {
+        if (response.status === 200) {
+          const weeklySales = {};
+          response.data.forEach(entry => {
+            const weekKey = `${entry.year}-${entry.month}-${entry.week}`;
+            if (!weeklySales[weekKey]) {
+              weeklySales[weekKey] = {
+                year: entry.year,
+                month: entry.month,
+                week: entry.week,
+                total_sales_amount: 0,
+                total_sales_count: 0
+              };
+            }
+            weeklySales[weekKey].total_sales_amount += entry.sales_amount;
+            weeklySales[weekKey].total_sales_count += entry.sales_count;
+          });
+
+          const weeklySalesArray = Object.values(weeklySales);
+          const data = [];
+          const label = [];
+          weeklySalesArray.forEach(e => {
+            data.push(e.total_sales_amount);
+            label.push(`${e.month}월 ${e.week}주`);
+          });
+          dailySalesData.value = data;
+          dailySalesLabel.value = label;
+        }
+      })
+      .catch(error => {
+        console.error('get category error: ', error);
+      });
+});
 
 const actions = [
   {
@@ -46,6 +86,8 @@ const actions = [
     chart: BarChart,
     iconForeground: 'text-teal-700',
     iconBackground: 'bg-teal-50',
+    salesData: dailySalesData,
+    salesLabel: dailySalesLabel
   },
   {
     title: '메뉴별 매출',
@@ -70,7 +112,6 @@ const actions = [
     chart: BarChart,
     iconForeground: 'text-yellow-700',
     iconBackground: 'bg-yellow-50',
-  },
-
-]
+  }
+];
 </script>

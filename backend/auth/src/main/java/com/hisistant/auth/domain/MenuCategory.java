@@ -1,8 +1,14 @@
 package com.hisistant.auth.domain;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class MenuCategory {
     @Id
     public Long id;
